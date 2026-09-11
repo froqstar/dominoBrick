@@ -1,0 +1,8 @@
+com.dominobrick.app-pngs-0 /home/froqstar/git/dominoBrick/android/app/build/generated/res/pngs/debug
+com.dominobrick.app-updated_navigation_xml-1 /home/froqstar/git/dominoBrick/android/app/build/generated/updated_navigation_xml/debug
+com.dominobrick.app-packageDebugResources-2 /home/froqstar/git/dominoBrick/android/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.dominobrick.app-packageDebugResources-3 /home/froqstar/git/dominoBrick/android/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.dominobrick.app-debug-4 /home/froqstar/git/dominoBrick/android/app/build/intermediates/merged_res/debug/mergeDebugResources
+com.dominobrick.app-debug-5 /home/froqstar/git/dominoBrick/android/app/src/debug/res
+com.dominobrick.app-main-6 /home/froqstar/git/dominoBrick/android/app/src/main/res
+gradleHome-0 /home/froqstar/.gradle

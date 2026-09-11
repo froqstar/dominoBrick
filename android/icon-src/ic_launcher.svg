@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<radialGradient id="bg" cx="50%" cy="38%" r="75%">
+<stop offset="0%" stop-color="#0d1a0d"/>
+<stop offset="60%" stop-color="#060a06"/>
+<stop offset="100%" stop-color="#000000"/>
+</radialGradient>
+<filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+<feGaussianBlur stdDeviation="6" result="b"/>
+<feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+<pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+<rect width="4" height="1.2" y="0" fill="#000000" opacity="0.35"/>
+</pattern>
+</defs>
+<rect x="0" y="0" width="512" height="512" rx="112" fill="url(#bg)"/>
+<rect x="132" y="118" width="120" height="264" fill="#071007"/>
+<g filter="url(#glow)" fill="#33ff66">
+<rect x="144" y="106" width="12" height="12"/><rect x="156" y="106" width="12" height="12"/><rect x="168" y="106" width="12" height="12"/><rect x="180" y="106" width="12" height="12"/><rect x="192" y="106" width="12" height="12"/><rect x="204" y="106" width="12" height="12"/><rect x="216" y="106" width="12" height="12"/><rect x="228" y="106" width="12" height="12"/>
+<rect x="144" y="394" width="12" height="12"/><rect x="156" y="394" width="12" height="12"/><rect x="168" y="394" width="12" height="12"/><rect x="180" y="394" width="12" height="12"/><rect x="192" y="394" width="12" height="12"/><rect x="204" y="394" width="12" height="12"/><rect x="216" y="394" width="12" height="12"/><rect x="228" y="394" width="12" height="12"/>
+<rect x="120" y="130" width="12" height="12"/><rect x="120" y="142" width="12" height="12"/><rect x="120" y="154" width="12" height="12"/><rect x="120" y="166" width="12" height="12"/><rect x="120" y="178" width="12" height="12"/><rect x="120" y="190" width="12" height="12"/><rect x="120" y="202" width="12" height="12"/><rect x="120" y="214" width="12" height="12"/><rect x="120" y="226" width="12" height="12"/><rect x="120" y="238" width="12" height="12"/><rect x="120" y="250" width="12" height="12"/><rect x="120" y="262" width="12" height="12"/><rect x="120" y="274" width="12" height="12"/><rect x="120" y="286" width="12" height="12"/><rect x="120" y="298" width="12" height="12"/><rect x="120" y="310" width="12" height="12"/><rect x="120" y="322" width="12" height="12"/><rect x="120" y="334" width="12" height="12"/><rect x="120" y="346" width="12" height="12"/><rect x="120" y="358" width="12" height="12"/><rect x="120" y="370" width="12" height="12"/>
+<rect x="252" y="130" width="12" height="12"/><rect x="252" y="142" width="12" height="12"/><rect x="252" y="154" width="12" height="12"/><rect x="252" y="166" width="12" height="12"/><rect x="252" y="178" width="12" height="12"/><rect x="252" y="190" width="12" height="12"/><rect x="252" y="202" width="12" height="12"/><rect x="252" y="214" width="12" height="12"/><rect x="252" y="226" width="12" height="12"/><rect x="252" y="238" width="12" height="12"/><rect x="252" y="250" width="12" height="12"/><rect x="252" y="262" width="12" height="12"/><rect x="252" y="274" width="12" height="12"/><rect x="252" y="286" width="12" height="12"/><rect x="252" y="298" width="12" height="12"/><rect x="252" y="310" width="12" height="12"/><rect x="252" y="322" width="12" height="12"/><rect x="252" y="334" width="12" height="12"/><rect x="252" y="346" width="12" height="12"/><rect x="252" y="358" width="12" height="12"/><rect x="252" y="370" width="12" height="12"/>
+<rect x="132" y="118" width="12" height="12"/><rect x="240" y="118" width="12" height="12"/><rect x="132" y="382" width="12" height="12"/><rect x="240" y="382" width="12" height="12"/>
+<rect x="132" y="250" width="12" height="12"/><rect x="144" y="250" width="12" height="12"/><rect x="156" y="250" width="12" height="12"/><rect x="168" y="250" width="12" height="12"/><rect x="180" y="250" width="12" height="12"/><rect x="192" y="250" width="12" height="12"/><rect x="204" y="250" width="12" height="12"/><rect x="216" y="250" width="12" height="12"/><rect x="228" y="250" width="12" height="12"/><rect x="240" y="250" width="12" height="12"/>
+<rect x="156" y="150" width="12" height="12"/><rect x="168" y="150" width="12" height="12"/><rect x="156" y="162" width="12" height="12"/><rect x="168" y="162" width="12" height="12"/>
+<rect x="192" y="196" width="12" height="12"/><rect x="204" y="196" width="12" height="12"/><rect x="192" y="208" width="12" height="12"/><rect x="204" y="208" width="12" height="12"/>
+<rect x="156" y="286" width="12" height="12"/><rect x="168" y="286" width="12" height="12"/><rect x="156" y="298" width="12" height="12"/><rect x="168" y="298" width="12" height="12"/>
+<rect x="180" y="316" width="12" height="12"/><rect x="192" y="316" width="12" height="12"/><rect x="180" y="328" width="12" height="12"/><rect x="192" y="328" width="12" height="12"/>
+<rect x="204" y="346" width="12" height="12"/><rect x="216" y="346" width="12" height="12"/><rect x="204" y="358" width="12" height="12"/><rect x="216" y="358" width="12" height="12"/>
+<rect x="310" y="196" width="22" height="22"/><rect x="332" y="218" width="22" height="22"/><rect x="354" y="240" width="22" height="22"/><rect x="376" y="262" width="22" height="22"/><rect x="354" y="284" width="22" height="22"/><rect x="332" y="306" width="22" height="22"/><rect x="310" y="328" width="22" height="22"/>
+<rect x="310" y="384" width="88" height="22"/>
+</g>
+<g filter="url(#glow)" fill="#baffcf">
+<rect x="144" y="106" width="12" height="12"/>
+<rect x="156" y="150" width="12" height="12"/><rect x="192" y="196" width="12" height="12"/>
+<rect x="156" y="286" width="12" height="12"/><rect x="180" y="316" width="12" height="12"/><rect x="204" y="346" width="12" height="12"/>
+<rect x="310" y="196" width="22" height="22"/><rect x="310" y="384" width="22" height="22"/>
+</g>
+<rect x="0" y="0" width="512" height="512" rx="112" fill="url(#scan)"/>
+</svg>

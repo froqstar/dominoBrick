@@ -1,0 +1,34 @@
+#pragma once
+
+#define SAMPLE_RATE_HZ 8000
+#define SYMBOL_RATE 10.766f
+#define SAMPLES_PER_SYMBOL ((int)(SAMPLE_RATE_HZ / SYMBOL_RATE))
+#define NUM_TONES 18
+#define NBANK 36
+#define TONE_SPACING_HZ 10.766f
+#define AUDIO_CENTER_HZ 1000.0f
+#define TONE_BASE_HZ (AUDIO_CENTER_HZ - (NUM_TONES / 2) * TONE_SPACING_HZ + TONE_SPACING_HZ * 0.5f)
+
+#ifdef HOST_TEST
+#define PIN_DAC_TX 0
+#define PIN_ADC_RX 0
+#else
+// WROOM32: DAC_CHAN_0 = GPIO25, ADC_CHANNEL_0 = GPIO36 (VP, input-only)
+#define PIN_DAC_TX DAC_CHAN_0
+#define PIN_ADC_RX ADC_CHANNEL_0
+#endif
+#define PIN_PTT_GPIO 4
+
+#define CAT_UART_NUM 1
+#define CAT_PIN_TX 16
+#define CAT_PIN_RX 17
+#define CAT_BAUD 19200
+#define CAT_RIG_ADDR 0x70
+#define CAT_CTRL_ADDR 0xE0
+#define CAT_RESP_TIMEOUT_MS 500
+#define CAT_POLL_INTERVAL_MS 1000
+#define CAT_MODE_DOMINOEX 0x01
+
+#define PTT_LEAD_MS 150
+#define PTT_TAIL_MS 150
+#define TX_PREAMBLE_SYMS 12

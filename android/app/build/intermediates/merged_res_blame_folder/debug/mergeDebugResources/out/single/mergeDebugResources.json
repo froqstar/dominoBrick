@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/froqstar/.gradle/daemon/9.7.1/com.dominobrick.app-debug-36:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/home/froqstar/.gradle/daemon/9.7.1/com.dominobrick.app-main-38:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "/home/froqstar/.gradle/daemon/9.7.1/com.dominobrick.app-debug-36:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "/home/froqstar/.gradle/daemon/9.7.1/com.dominobrick.app-main-38:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "/home/froqstar/.gradle/daemon/9.7.1/com.dominobrick.app-debug-36:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "/home/froqstar/.gradle/daemon/9.7.1/com.dominobrick.app-main-38:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.dominobrick.app-debug-36:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.dominobrick.app-main-38:/drawable/ic_launcher_foreground.xml"
+    }
+]
