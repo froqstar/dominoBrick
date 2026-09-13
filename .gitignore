@@ -1,0 +1,21 @@
+# ESP-IDF build output (idf.py build)
+build/
+managed_components/
+dependencies.lock
+
+# Generated Kconfig state — keep sdkconfig.defaults, ignore the rest
+sdkconfig
+sdkconfig.old
+sdkconfig.bak
+
+# Host-test objects if ever built in-tree (normally go to /tmp)
+*.o
+*.d
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~

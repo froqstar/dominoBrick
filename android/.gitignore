@@ -1,0 +1,21 @@
+# Gradle + Android Studio
+*.iml
+.gradle/
+local.properties
+.idea/
+.DS_Store
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+.kotlin/
+
+# Build outputs
+*.apk
+*.aab
+*.ap_
+*.dex
+*.hprof
+
+# Keep the wrapper bootstrap jar
+!gradle/wrapper/gradle-wrapper.jar
