@@ -13,9 +13,9 @@
 #define PIN_DAC_TX 0
 #define PIN_ADC_RX 0
 #else
-// WROOM32: DAC_CHAN_0 = GPIO25, ADC_CHANNEL_0 = GPIO36 (VP, input-only)
+// WROOM32: DAC_CHAN_0 = GPIO25, ADC_CHANNEL_6 = GPIO34 (input-only)
 #define PIN_DAC_TX DAC_CHAN_0
-#define PIN_ADC_RX ADC_CHANNEL_0
+#define PIN_ADC_RX ADC_CHANNEL_6
 #endif
 #define PIN_PTT_GPIO 4
 

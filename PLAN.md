@@ -28,7 +28,7 @@ Goal: ESP32 talks DominoEX11 with Xiegu G106 ACC port. RX decode + TX encode aud
 
 ### Wiring
 ```
-G106 AF_OUT -> pot divider -> 1uF -> transformer -> RC 3kHz -> ESP32 ADC GPIO36
+G106 AF_OUT -> pot divider -> 1uF -> transformer -> RC 3kHz -> ESP32 ADC GPIO34
 ESP32 DAC GPIO25 -> RC 3kHz -> pot -> transformer -> 1uF -> G106 AF_IN
 ESP32 GPIO4 -> 1k -> PC817 -> G106 PTT/GND
 ```

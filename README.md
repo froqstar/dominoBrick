@@ -1,8 +1,9 @@
 # dominoBrick
 
 ESP32 (classic WROOM32) DominoEX11 modem for the Xiegu G106. It sits between
-your phone/laptop and the rig's ACC port: you send text over BLE, it transmits
+your phone/laptop and the rig: you send text over BLE, it transmits
 DominoEX11 audio; it decodes received audio and sends the text back over BLE.
+It also tunes the rig over CAT (frequency + mode).
 
 No beacons, no auto-transmit. The modem only keys when you give it something
 to send.
@@ -14,22 +15,33 @@ to send.
 - G106 ACC port: AF in/out through 600:600 isolation transformers and level
   trimmers, PTT through a PC817 opto (GPIO4, active low). RC lowpass (~3 kHz)
   on both audio directions.
+- G106 CI-V jack: UART1 at 19200 baud (GPIO17 TX, GPIO16 RX) for CAT frequency
+  and mode control.
 - See `PLAN.md` for the full wiring sketch and bring-up order
   (continuity → PTT → RX → TX → on-air, 5 W max, dummy load first).
 
 ## Using it
 
-1. Power up, connect the ACC cable, open your BLE app and connect to
-   **`dominoBrick`**.
-2. Subscribe to `TX_PROGRESS` (`d0b1…0002`) and `RX_PRIMARY` (`d0b1…0004`).
-3. Write your text to `TX_DATA` (`d0b1…0001`). Every write is appended to the
+Find the brick by BLE scanning for the service UUID
+`d0b10000-bbaa-9988-7766-554433221100` (in the advertising packet; the name
+`dominoBrick` is in the scan response), then connect.
+
+1. Subscribe to `TX_PROGRESS` (`d0b1…0002`), `RX_PRIMARY` (`d0b1…0004`) and
+   `FREQ` (`d0b1…0006`), then read `FREQ` once for the current rig frequency.
+2. Write your text to `TX_DATA` (`d0b1…0001`). Every write is appended to the
    transmit buffer and aired; the rig keys automatically and unkeys 3 s after
    the buffer drains.
-4. Watch `TX_PROGRESS`: it echoes each character as it goes on air, in order —
-   match it against what you sent to see progress.
-5. Received text arrives as notifications on `RX_PRIMARY` (secondary channel
-   on `RX_SECONDARY`, `d0b1…0005`). Set the secondary filler text via
-   `SEC_MSG` (`d0b1…0003`).
+3. Watch `TX_PROGRESS`: it echoes each character as it goes on air, in order —
+   match it against what you sent to see progress. Echoes can lead actual
+   airtime by up to ~1 s during sustained typing.
+4. Received text arrives as notifications on `RX_PRIMARY` (secondary channel
+   on `RX_SECONDARY`, `d0b1…0005`). Noise decodes to occasional garbage
+   characters, same as fldigi — there is no squelch gate.
+5. Set the secondary filler text via `SEC_MSG` (`d0b1…0003`); it airs while
+   the session is held open with an empty primary buffer.
+6. Tune the rig by writing a 4-byte little-endian Hz value to `FREQ`. Knob
+   turns on the radio notify back. Link prefers MTU 240 and 15–30 ms
+   connection interval — 11 writes/s + 11 notifies/s fits easily.
 
 Full characteristic contract, edge cases and session timing: [`BLE_API.md`](BLE_API.md).
 
@@ -67,10 +79,13 @@ gcc -DHOST_TEST -O2 -o /tmp/roundtrip test/roundtrip.c main/dominoex.c main/domi
 
 - `main/app_main.c` — RX/TX tasks, session/PTT logic, BOOT button handler
 - `main/ble_server.c` — NimBLE service, GATT table, notify path
+- `main/cat.c` — CI-V frequency/mode control, polls + snoops the rig
 - `main/dominoex.c`, `main/dominovar.c` — verbatim fldigi DominoEX codec
   (do not hand-edit the tables)
 - `main/dsp_goertzel.c` — complex-differential detector bank + AFC
-- `main/audio_io.c`, `main/tx_nco.c`, `main/ptt.c` — DAC/ADC, NCO, PTT
+- `main/audio_io.c`, `main/tx_nco.c`, `main/ptt.c` — DAC/ADC, NCO, PTT.
+  TX audio runs the DAC in async mode, started once and refilled forever —
+  see `AGENTS.md` before touching it
 - `test/` — host DSP tests (`probe.c` is a one-off diagnostic)
 - `AGENTS.md` — contributor notes: protocol invariants and hard-earned DSP
   constraints. Read it before touching modem code.
