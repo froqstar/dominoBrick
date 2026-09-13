@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 enum class DeviceStatus { CONNECTED, CONNECTING, RETRYING, IDLE }
 
-data class PairedDevice(val mac: String, val status: DeviceStatus)
+data class PairedDevice(val mac: String, val name: String?, val status: DeviceStatus)
 
 class SettingsViewModel(
     private val appContext: android.content.Context,
@@ -47,13 +47,18 @@ class SettingsViewModel(
         freqs.add(name.trim(), freqHz)
     }
 
+    fun updateFrequency(id: Long, name: String, freqHz: Long) {
+        if (name.isBlank()) return
+        freqs.update(id, name.trim(), freqHz)
+    }
+
     fun removeFrequency(id: Long) {
         freqs.remove(id)
     }
 
     val devices: StateFlow<List<PairedDevice>> = combine(
-        store.macs, ble.conn, ble.currentAddress,
-    ) { macs, conn, current ->
+        store.macs, store.names, ble.conn, ble.currentAddress,
+    ) { macs, names, conn, current ->
         macs.sorted().map { mac ->
             val status = if (current != null && current.equals(mac, ignoreCase = true)) {
                 when (conn) {
@@ -65,7 +70,7 @@ class SettingsViewModel(
             } else {
                 DeviceStatus.IDLE
             }
-            PairedDevice(mac, status)
+            PairedDevice(mac, names[mac], status)
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -95,8 +100,8 @@ class SettingsViewModel(
         _pairError.value = msg
     }
 
-    fun connect(mac: String) {
-        DominoLinkService.start(appContext, mac)
+    fun renameDevice(mac: String, name: String) {
+        store.saveName(mac, name)
     }
 
     fun unpair(mac: String) {

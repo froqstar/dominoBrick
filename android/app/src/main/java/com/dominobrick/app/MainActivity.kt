@@ -81,12 +81,17 @@ class MainActivity : ComponentActivity() {
                 val freqMatch = freqHz?.let { hz -> favorites.firstOrNull { it.freqHz == hz } }
                 var showFreqSave by remember { mutableStateOf(false) }
                 val app = application as DominoApp
+                val names by app.store.names.collectAsState()
+                val currentAddr by app.ble.currentAddress.collectAsState()
+                val connectedName = currentAddr?.let { addr ->
+                    names.entries.firstOrNull { it.key.equals(addr, ignoreCase = true) }?.value
+                }
                 val demoScope = rememberCoroutineScope()
                 var demoJob by remember { mutableStateOf<Job?>(null) }
                 BackHandler(enabled = screen == Screen.Settings) { screen = Screen.Chat }
                 Column(Modifier.fillMaxSize()) {
                     TopBar(
-                        title = if (screen == Screen.Chat) "dominoBrick" else "Settings",
+                        title = if (screen == Screen.Chat) (connectedName ?: "dominoBrick") else "Settings",
                         subtitle = connLabel(conn),
                         showBack = screen == Screen.Settings,
                         onBack = { screen = Screen.Chat },

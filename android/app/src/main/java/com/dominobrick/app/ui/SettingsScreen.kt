@@ -48,6 +48,8 @@ fun SettingsScreen(vm: SettingsViewModel) {
     val secondary by vm.secondary.collectAsState()
     val frequencies by vm.frequencies.collectAsState()
     var showFreqDialog by remember { mutableStateOf(false) }
+    var editingFreq by remember { mutableStateOf<com.dominobrick.app.data.FavoriteFrequency?>(null) }
+    var renamingMac by remember { mutableStateOf<String?>(null) }
 
     val picker = rememberLauncherForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult(),
@@ -71,8 +73,13 @@ fun SettingsScreen(vm: SettingsViewModel) {
         devices.forEach { device ->
             val connected = device.status == DeviceStatus.CONNECTED
             ListItem(
-                headlineContent = { Text(device.mac) },
-                supportingContent = { Text(statusText(device.status)) },
+                headlineContent = { Text(device.name ?: device.mac) },
+                supportingContent = {
+                    Text(
+                        if (device.name != null) "${device.mac} · ${statusText(device.status)}"
+                        else statusText(device.status),
+                    )
+                },
                 leadingContent = {
                     val dot = when (device.status) {
                         DeviceStatus.CONNECTED -> MaterialTheme.colorScheme.primary
@@ -94,7 +101,7 @@ fun SettingsScreen(vm: SettingsViewModel) {
                         Color.Transparent
                     },
                 ),
-                modifier = Modifier.clickable { vm.connect(device.mac) },
+                modifier = Modifier.clickable { renamingMac = device.mac },
             )
         }
         Row(
@@ -143,6 +150,7 @@ fun SettingsScreen(vm: SettingsViewModel) {
                         Icon(Icons.Filled.Close, contentDescription = "Remove")
                     }
                 },
+                modifier = Modifier.clickable { editingFreq = freq },
             )
         }
         Row(
@@ -179,11 +187,51 @@ fun SettingsScreen(vm: SettingsViewModel) {
             },
         )
     }
+    editingFreq?.let { current ->
+        FrequencyDialog(
+            onDismiss = { editingFreq = null },
+            onSave = { name, freqHz ->
+                vm.updateFrequency(current.id, name, freqHz)
+                editingFreq = null
+            },
+            initialName = current.name,
+            initialFreqMhz = com.dominobrick.app.data.FavoriteFrequency.mhzInput(current.freqHz),
+        )
+    }
+    renamingMac?.let { mac ->
+        val currentName = devices.firstOrNull { it.mac == mac }?.name ?: ""
+        var name by remember(mac) { mutableStateOf(currentName) }
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { renamingMac = null },
+            title = { Text("Name device") },
+            text = {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Name") },
+                    placeholder = { Text(mac) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = {
+                    vm.renameDevice(mac, name)
+                    renamingMac = null
+                }) { Text("Save") }
+            },
+            dismissButton = {
+                androidx.compose.material3.TextButton(onClick = { renamingMac = null }) {
+                    Text("Cancel")
+                }
+            },
+        )
+    }
 }
 
 private fun statusText(status: DeviceStatus): String = when (status) {
     DeviceStatus.CONNECTED -> "connected"
     DeviceStatus.CONNECTING -> "connecting…"
     DeviceStatus.RETRYING -> "retrying…"
-    DeviceStatus.IDLE -> "tap to connect"
+    DeviceStatus.IDLE -> "tap to rename"
 }

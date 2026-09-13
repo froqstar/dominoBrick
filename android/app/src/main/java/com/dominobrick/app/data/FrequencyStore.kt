@@ -17,13 +17,17 @@ class FrequencyStore(context: Context) {
         save(updated)
     }
 
+    fun update(id: Long, name: String, freqHz: Long) {
+        save(_frequencies.value.map { if (it.id == id) it.copy(name = name, freqHz = freqHz) else it })
+    }
+
     fun remove(id: Long) {
         save(_frequencies.value.filter { it.id != id })
     }
 
     private fun save(list: List<FavoriteFrequency>) {
         prefs.edit().putStringSet(KEY_FREQS, list.map { it.serialize() }.toSet()).apply()
-        _frequencies.value = list
+        _frequencies.value = list.sortedBy { it.freqHz }
     }
 
     private fun loadSync(): List<FavoriteFrequency> =

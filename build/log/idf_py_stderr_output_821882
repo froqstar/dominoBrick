@@ -1,6 +1,0 @@
---- esp-idf-monitor 1.10.0 on /dev/ttyUSB0 115200
---- Standard input is not a TTY, running in non-interactive mode. Reading commands from stdin: reset, flash, flash-all, app-flash, output, log, timestamps, bootloader, send <text>, sleep <seconds>, expect [--timeout <seconds>] <regex>, exit | Quit: 'exit' command, EOF or Ctrl+C
---- Command: 'sleep 12'
---- 0x40080400: _init at ??:?
---- Command: 'exit'
-
