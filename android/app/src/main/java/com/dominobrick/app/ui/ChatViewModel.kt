@@ -20,6 +20,7 @@ class ChatViewModel(
     val messages = repo.messages
     val conn = ble.conn
     val draft = repo.draft
+    val mycall = store.mycall
 
     private var flushJob: Job? = null
 
@@ -58,9 +59,22 @@ class ChatViewModel(
 
     fun insertAuthor(author: String?) {
         if (author.isNullOrEmpty() || author == "me") return
+        val dx = author.trim().uppercase()
+        val me = store.mycall.value.trim().uppercase()
         val current = repo.draftText()
         val gap = if (current.isEmpty() || current.endsWith(" ")) "" else " "
-        val text = "$gap$author "
+        val text = if (me.isEmpty()) "$gap$dx " else "$gap$dx DE $me "
+        repo.typeToDraft(text)
+        viewModelScope.launch {
+            runCatching { ble.sendBytes(text.toByteArray(Charsets.UTF_8)) }
+        }
+    }
+
+    fun sendMacro(snippet: String) {
+        if (snippet.isEmpty()) return
+        val current = repo.draftText()
+        val gap = if (current.isEmpty() || current.endsWith(" ") || snippet.startsWith(" ")) "" else " "
+        val text = "$gap$snippet"
         repo.typeToDraft(text)
         viewModelScope.launch {
             runCatching { ble.sendBytes(text.toByteArray(Charsets.UTF_8)) }

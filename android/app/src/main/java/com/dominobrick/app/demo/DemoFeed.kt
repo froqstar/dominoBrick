@@ -12,8 +12,8 @@ object DemoFeed {
 
     private val script = listOf(
         Station(
-            "CQ CQ DO3DEL is on air ",
-            "CQ CQ DE DO3DEL DO3DEL K ",
+            "CQ CQ AB3DEF is on air ",
+            "CQ CQ DE AB3DEF AB3DEF K ",
             14_074_000,
         ),
         Station(

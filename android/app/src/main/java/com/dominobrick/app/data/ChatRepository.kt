@@ -18,7 +18,7 @@ class ChatRepository(private val externalScope: CoroutineScope) {
     private val secondaryBuffer = StringBuilder()
     private val window = ArrayDeque<Char>()
 
-    private val callsignPattern = Regex("(?i)\\b([A-Z0-9]{1,4}[0-9][A-Z0-9/]{1,7})\\b")
+    private val callsignPattern = Regex("(?<![A-Z0-9/])([A-Z0-9]{1,4}[0-9][A-Z0-9/]{1,7})(?![A-Z0-9/])")
 
     data class DraftChar(val c: Char, val aired: Boolean)
 

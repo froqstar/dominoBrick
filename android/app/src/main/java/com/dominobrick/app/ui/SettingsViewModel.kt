@@ -40,6 +40,9 @@ class SettingsViewModel(
     private val _secondary = MutableStateFlow(store.secondary.value)
     val secondary: StateFlow<String> = _secondary.asStateFlow()
 
+    private val _mycall = MutableStateFlow(store.mycall.value)
+    val mycall: StateFlow<String> = _mycall.asStateFlow()
+
     val frequencies = freqs.frequencies
 
     fun addFrequency(name: String, freqHz: Long) {
@@ -116,6 +119,11 @@ class SettingsViewModel(
     }
 
     private var secondaryJob: Job? = null
+
+    fun onMyCallChange(text: String) {
+        _mycall.value = text.uppercase()
+        store.saveMyCall(text)
+    }
 
     fun onSecondaryChange(text: String) {
         _secondary.value = text

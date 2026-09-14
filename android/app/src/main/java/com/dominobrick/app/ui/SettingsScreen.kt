@@ -46,6 +46,7 @@ fun SettingsScreen(vm: SettingsViewModel) {
     val devices by vm.devices.collectAsState()
     val pairError by vm.pairError.collectAsState()
     val secondary by vm.secondary.collectAsState()
+    val mycall by vm.mycall.collectAsState()
     val frequencies by vm.frequencies.collectAsState()
     var showFreqDialog by remember { mutableStateOf(false) }
     var editingFreq by remember { mutableStateOf<com.dominobrick.app.data.FavoriteFrequency?>(null) }
@@ -165,6 +166,18 @@ fun SettingsScreen(vm: SettingsViewModel) {
             }
         }
         HorizontalDivider(Modifier.padding(vertical = 8.dp))
+        Text(
+            "My callsign",
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier.padding(top = 8.dp),
+        )
+        OutlinedTextField(
+            value = mycall,
+            onValueChange = { vm.onMyCallChange(it) },
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            placeholder = { Text("AB3DEF") },
+            singleLine = true,
+        )
         Text(
             "Secondary text",
             style = MaterialTheme.typography.titleSmall,

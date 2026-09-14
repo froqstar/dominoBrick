@@ -37,6 +37,15 @@ class DeviceStore(context: Context) {
         _secondary.value = text
     }
 
+    private val _mycall = MutableStateFlow(prefs.getString(KEY_MYCALL, "") ?: "")
+    val mycall: StateFlow<String> = _mycall.asStateFlow()
+
+    fun saveMyCall(text: String) {
+        val v = text.trim().uppercase()
+        prefs.edit().putString(KEY_MYCALL, v).apply()
+        _mycall.value = v
+    }
+
     fun loadMac(): String? = _macs.value.firstOrNull()
 
     fun saveMac(mac: String) {
@@ -66,6 +75,7 @@ class DeviceStore(context: Context) {
         private const val KEY_MACS = "bonded_macs"
         private const val KEY_MAC = "bonded_mac"
         private const val KEY_SECONDARY = "secondary_text"
+        private const val KEY_MYCALL = "mycall"
         private const val KEY_NAMES = "device_names"
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +18,9 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -80,6 +83,23 @@ fun ChatScreen(vm: ChatViewModel) {
             }
         }
     }
+    val mycall by vm.mycall.collectAsState()
+    val macros = remember(mycall) {
+        val me = mycall.trim().uppercase()
+        listOf(
+            "CQ" to if (me.isEmpty()) "CQ CQ DE K " else "CQ CQ DE $me $me K ",
+            "BTU" to "BTU ",
+            "K" to "K ",
+            "KN" to "KN ",
+            "BK" to "BK ",
+            "RSQ" to "UR RSQ 599 ",
+            "RPT" to "PSE RPT ",
+            "AGN?" to "AGN? ",
+            "xxx" to "xxx ",
+            "73" to "73 ",
+            "SK" to "SK ",
+        )
+    }
 
     Column(Modifier.fillMaxSize().imePadding()) {
         LazyColumn(
@@ -89,6 +109,14 @@ fun ChatScreen(vm: ChatViewModel) {
             items(messages, key = { it.id }) {
                 val active = it.direction == Direction.RECEIVED && now - it.timestamp < 1000
                 MessageRow(it, active) { vm.insertAuthor(it.author) }
+            }
+        }
+        Row(
+            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            macros.forEach { (label, snippet) ->
+                FilledTonalButton(onClick = { vm.sendMacro(snippet) }) { Text(label) }
             }
         }
         TextField(
