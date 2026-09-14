@@ -1,9 +1,11 @@
 #include "audio_io.h"
 #include "config.h"
-#include "driver/dac_continuous.h"
+#include "rx_resample.h"
 #include "driver/gpio.h"
+#include "driver/dac_continuous.h"
 #include "esp_adc/adc_oneshot.h"
 #include "esp_log.h"
+#include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/semphr.h"
@@ -32,6 +34,32 @@ static SemaphoreHandle_t drain_sem;
 static QueueHandle_t done_q;
 static uint8_t stage[DESC_SRC_CAP];
 static uint8_t silence_block[DESC_SRC_CAP];
+
+#define SAMP_Q_LEN 512
+#define SAMP_PERIOD_US 125
+
+typedef struct {
+    int16_t v;
+    int64_t t;
+} samp_t;
+
+static QueueHandle_t samp_q;
+static esp_timer_handle_t samp_timer;
+static unsigned samp_dropped;
+
+static void samp_cb(void *arg)
+{
+    (void)arg;
+    int v = 2048;
+    adc_oneshot_read(adc_h, PIN_ADC_RX, &v);
+    samp_t s = { .v = (int16_t)v, .t = esp_timer_get_time() };
+    if (xQueueSend(samp_q, &s, 0) != pdTRUE) {
+        samp_t old;
+        xQueueReceive(samp_q, &old, 0);
+        xQueueSend(samp_q, &s, 0);
+        samp_dropped++;
+    }
+}
 
 static bool done_cb(dac_continuous_handle_t h, const dac_event_data_t *e, void *u)
 {
@@ -109,18 +137,53 @@ void audio_io_init(void)
         .atten = ADC_ATTEN_DB_11,
     };
     ESP_ERROR_CHECK(adc_oneshot_config_channel(adc_h, PIN_ADC_RX, &ac));
+    samp_q = xQueueCreate(SAMP_Q_LEN, sizeof(samp_t));
+    esp_timer_create_args_t st = {
+        .callback = samp_cb,
+        .name = "adc_samp",
+    };
+    ESP_ERROR_CHECK(esp_timer_create(&st, &samp_timer));
     gpio_set_direction(PIN_PTT_GPIO, GPIO_MODE_OUTPUT);
     gpio_set_level(PIN_PTT_GPIO, 1);
     ESP_LOGI(TAG, "audio ready fs=%d", SAMPLE_RATE_HZ);
 }
 
+static rs_t rs_state;
+static int rs_started;
+static int16_t outq[8];
+static int outq_n, outq_i;
+
+void audio_rx_start(void)
+{
+    ESP_ERROR_CHECK(esp_timer_start_periodic(samp_timer, SAMP_PERIOD_US));
+}
+
 int audio_rx_read(void)
 {
-    int raw = 0;
-    if (adc_oneshot_read(adc_h, PIN_ADC_RX, &raw) != ESP_OK) {
-        return 2048;
+    if (outq_i >= outq_n) {
+        if (!rs_started) {
+            rs_reset(&rs_state);
+            rs_started = 1;
+        }
+        for (int k = 0; k < 8; k++) {
+            samp_t s;
+            if (xQueueReceive(samp_q, &s, pdMS_TO_TICKS(20)) != pdTRUE) {
+                break;
+            }
+            rs_feed1(&rs_state, s.v, s.t);
+        }
+        outq_n = 0;
+        outq_i = 0;
+        int16_t o;
+        while (outq_n < 8 && rs_pop(&rs_state, &o)) {
+            outq[outq_n++] = o;
+        }
+        if (outq_n == 0) {
+            outq[0] = 2048;
+            outq_n = 1;
+        }
     }
-    return raw;
+    return outq[outq_i++];
 }
 
 void audio_tx_stream(const uint8_t *buf, size_t len)

@@ -68,7 +68,10 @@ static void rx_task(void *a)
         tone_detect_wide(win + 2 * S, N, SAMPLE_RATE_HZ, afc_off, &cl);
         int sel = 1;
         corr = 0;
-        if (co < 3.0f) {
+        float wmax = ce > co ? (ce > cl ? ce : cl) : (co > cl ? co : cl);
+        if (wmax < 3.0f) {
+            sel = 1;
+        } else if (co < 3.0f) {
             if (bad > 4) {
                 sel = 1;
             } else if (ce >= cl) {
@@ -331,5 +334,6 @@ void app_main(void)
     xTaskCreatePinnedToCore(tx_task, "tx", 4096, NULL, 5, NULL, 1);
     xTaskCreatePinnedToCore(button_task, "btn", 2048, NULL, 4, NULL, 1);
     ble_server_init();
+    audio_rx_start();
     ESP_LOGI(TAG, "dominoBrick ready");
 }

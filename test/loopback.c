@@ -114,7 +114,10 @@ int main(void)
         tone_detect_wide(win + 2 * S, N, SAMPLE_RATE_HZ, afc_off, &cl);
         int sel = 1;
         corr = 0;
-        if (co < 3.0f) {
+        float wmax = ce > co ? (ce > cl ? ce : cl) : (co > cl ? co : cl);
+        if (wmax < 3.0f) {
+            sel = 1;
+        } else if (co < 3.0f) {
             if (bad > 4) {
                 sel = 1;
             } else if (ce >= cl) {
